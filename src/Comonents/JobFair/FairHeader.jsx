@@ -43,13 +43,13 @@ const FairHeader = () => {
 
   useEffect(() => {
     if (user && !isFetching) {
-      setStateProfilePicture(fairRegister.profilePicture);
+      setStateProfilePicture(fairRegister?.profilePicture);
     }
-  }, [fairRegister.profilePicture, isFetching, setStateProfilePicture, user]);
+  }, [fairRegister?.profilePicture, isFetching, setStateProfilePicture, user]);
 
-  // console.log(stateProfilePicture);
+  console.log(stateProfilePicture);
   return (
-    <div className='flex items-center justify-between bg-gray-400 px-5 py-3'>
+    <div className='flex items-center sticky top-0 z-50 justify-between bg-gray-400 px-5 py-3'>
       <Link to='/' className='w-32'>
         <img
           src='https://i.ibb.co/BcFWdqk/Hire-Master-Logo-2.png'
@@ -87,24 +87,22 @@ const FairHeader = () => {
             ""
           ) : (
             <MenuButton>
-              <div className=' flex items-center border rounded-xl  px-2'>
-                <Avatar
-                  src={stateProfilePicture[0]?.url || undefined}
-                  icon={
-                    !stateProfilePicture[0]?.url ? (
-                      <BsFillPersonVcardFill />
-                    ) : (
-                      undefined
-                    )
-                  }
-                  size='md'
-                />
-                <Box ml='1'>
-                  <ChevronDownIcon color={"white"} />
-                </Box>
-              </div>
+              {fairRegister !== null && (
+                <div className=' flex items-center border rounded-xl  px-2'>
+                  <Avatar
+                    src={stateProfilePicture && stateProfilePicture[0]?.url}
+                    icon={<BsFillPersonVcardFill />}
+                    size='md'
+                  />
+
+                  <Box ml='1'>
+                    <ChevronDownIcon color={"white"} />
+                  </Box>
+                </div>
+              )}
             </MenuButton>
           )}
+
           <MenuList>
             {fairRegister?.userType === "job-seeker" && (
               <MenuGroup title='Profile' marginBottom={5}>
@@ -121,6 +119,7 @@ const FairHeader = () => {
                   <TriangleUpIcon marginRight={1} />
                   Job Fair
                 </MenuItem>
+                <MenuDivider />
                 <MenuItem
                   as={Link}
                   to='/job-fair/profile'
@@ -160,6 +159,7 @@ const FairHeader = () => {
                 <MenuItem
                   as={Link}
                   to='/job-fair/profile/settings'
+                  marginBottom={3}
                   _hover={{
                     bg: "red.500",
                     color: "white",
@@ -167,6 +167,16 @@ const FairHeader = () => {
                 >
                   <SettingsIcon marginRight={1} />
                   Settings
+                </MenuItem>
+                <MenuItem
+                  as={Link}
+                  _hover={{
+                    bg: "red.500",
+                    color: "white",
+                  }}
+                >
+                  <Icon as={TbLogout2} marginRight={1} />
+                  Logout
                 </MenuItem>
               </MenuGroup>
             )}
@@ -185,6 +195,9 @@ const FairHeader = () => {
                   <TriangleUpIcon marginRight={1} />
                   Job Fair
                 </MenuItem>
+
+                <MenuDivider />
+
                 <MenuItem
                   as={Link}
                   to='/job-fair/profile'
@@ -225,6 +238,7 @@ const FairHeader = () => {
                 <MenuItem
                   as={Link}
                   to='/job-fair/profile/settings'
+                  marginBottom={3}
                   _hover={{
                     bg: "red.500",
                     color: "white",

@@ -26,9 +26,7 @@ import {
   ModalCloseButton,
 } from "@chakra-ui/react";
 import { FaHashtag } from "react-icons/fa";
-import useAuth from "../Hooks/Auth/useAuth";
-import { getFairRegisteredUser } from "../../api";
-import { useQuery } from "@tanstack/react-query";
+import useFairRegister from "../Hooks/FairRegister/useFairRegister";
 
 const FairEventCard = ({
   event,
@@ -36,7 +34,6 @@ const FairEventCard = ({
   handleEventJoining,
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { user } = useAuth();
 
   const {
     title,
@@ -58,16 +55,7 @@ const FairEventCard = ({
   const formattedDate = formatDate(dateOfEvent);
   // console.log(event);
 
-  const { data: fair_register = {} } = useQuery({
-    queryKey: ["fair_register", user?.email],
-    queryFn: async () => {
-      const res = await getFairRegisteredUser(user?.email);
-      return res.data;
-    },
-    enabled: !!user,
-  });
-
-  console.log(fair_register);
+  const { fairUser } = useFairRegister();
 
   return (
     <>
@@ -85,14 +73,14 @@ const FairEventCard = ({
               width='100%'
             />
             <Tooltip
-              isDisabled={fair_register.userType === "sponsor"}
+              isDisabled={fairUser?.userType === "sponsor"}
               label='Add as interested!'
               hasArrow
               placement='left'
               fontSize='lg'
             >
               <Button
-                disabled={fair_register.userType === "sponsor"}
+                disabled={fairUser?.userType === "sponsor"}
                 onClick={() => handleInterestedEvent(slug)}
                 position='absolute'
                 bottom='0'
@@ -180,7 +168,7 @@ const FairEventCard = ({
               Close
             </Button>
             <Button
-              isDisabled={fair_register.userType === "sponsor"}
+              isDisabled={fairUser?.userType === "sponsor" || fairUser === null}
               onClick={() => handleEventJoining(slug)}
               colorScheme='green'
             >

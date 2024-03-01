@@ -1,10 +1,5 @@
 import FairEventCard from "./FairEventCard";
-import { useQuery } from "@tanstack/react-query";
-import {
-  getFairEventsFromDb,
-  saveEventBookingsInDb,
-  saveInterestedEventInDb,
-} from "../../api";
+import { saveEventBookingsInDb, saveInterestedEventInDb } from "../../api";
 import toast from "react-hot-toast";
 import useAuth from "../Hooks/Auth/useAuth";
 import Loader from "../Loader/Loader";
@@ -12,18 +7,16 @@ import { Button, Flex } from "@chakra-ui/react";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { Link as ChakraLink } from "@chakra-ui/react";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
+import useAllFairEvents from "../Hooks/FairEvents/useAllFairEvents";
+import useFairRegister from "../Hooks/FairRegister/useFairRegister";
 
 const FairEvent = () => {
   const { user } = useAuth();
-  const { data: jobFairData = [], isFetching } = useQuery({
-    queryKey: ["all-events"],
-    queryFn: async () => {
-      const res = await getFairEventsFromDb();
-      return res.data;
-    },
-    enabled: !!user,
-  });
-  // console.log(jobFairData);
+
+  const { jobFairData, isFetching } = useAllFairEvents();
+  const { fairUser } = useFairRegister();
+  console.log(fairUser);
+  console.log(jobFairData);
 
   const handleInterestedEvent = async slug => {
     try {
@@ -39,7 +32,7 @@ const FairEvent = () => {
 
   const handleEventJoining = async slug => {
     try {
-      const res = await saveEventBookingsInDb(slug, user?.email);
+      const res = await saveEventBookingsInDb(slug, fairUser);
       if (res.data.result.insertedId) {
         toast.success(`Event ${slug} booked successfully.`);
       }
@@ -49,7 +42,7 @@ const FairEvent = () => {
     }
   };
 
-  if (!user || isFetching) {
+  if (isFetching) {
     return <Loader />;
   }
   return (
