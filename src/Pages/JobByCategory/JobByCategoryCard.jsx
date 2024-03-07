@@ -9,14 +9,14 @@ import { IoMdTime } from "react-icons/io";
 
 const JobByCategoryCard = ({card}) => {
     const { job_title} = card ||{}
-    console.log(job_title)
+    
     const axiosPublic = UseAxiosPublic()
     const [data,setData] = useState([])
     const [filterData,setFilterData] = useState([])
     const [loading, setLoading] = useState(true)
     
     useEffect(()=>{
-        fetch('http://localhost:5000/filter/static-job-post')
+        fetch('https://hire-master-server.vercel.app/filter/static-job-post')
         .then(res => res.json())
         .then(data => {
             setData(data)
@@ -32,8 +32,7 @@ const JobByCategoryCard = ({card}) => {
         setFilterData(filterDataNew)
     },[data, job_title])
     
-   console.log(filterData)
-    console.log(data)
+   
 
     return (
         <div>
